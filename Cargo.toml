@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-chrono = { version = "0.4" }
+chrono = "0.4"
+walkdir = "2.5"
 
 [[example]]
 name = "sample"
