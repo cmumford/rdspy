@@ -1,11 +1,14 @@
+use chrono::{NaiveDate, NaiveTime};
 use std::io::{self, BufRead};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RdsGroup {
     pub a: u16,
     pub b: u16,
     pub c: u16,
     pub d: u16,
+    pub date: NaiveDate,
+    pub time: NaiveTime,
 }
 
 pub struct RdsGroupIterator<R: BufRead> {
@@ -38,7 +41,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                     }
 
                     let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() < 4 {
+                    if parts.len() < 6 {
                         eprintln!("Warning: skipping short line: {}", line);
                         continue;
                     }
@@ -52,6 +55,10 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                             .ok()
                     };
 
+                    let date_clean = parts[4].trim_start_matches('@').trim();
+                    let date = NaiveDate::parse_from_str(date_clean, "%Y/%m/%d").unwrap();
+                    let time = NaiveTime::parse_from_str(parts[5], "%H:%M:%S%.f").unwrap();
+
                     match (
                         parse_hex(parts[0]),
                         parse_hex(parts[1]),
@@ -59,7 +66,14 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                         parse_hex(parts[3]),
                     ) {
                         (Some(a), Some(b), Some(c), Some(d)) => {
-                            return Some(Ok(RdsGroup { a, b, c, d }));
+                            return Some(Ok(RdsGroup {
+                                a,
+                                b,
+                                c,
+                                d,
+                                date: date.into(),
+                                time: time.into(),
+                            }));
                         }
                         _ => {
                             eprintln!("Skipping invalid hex line: {}", line);

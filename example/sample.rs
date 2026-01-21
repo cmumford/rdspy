@@ -23,8 +23,8 @@ fn main() -> io::Result<()> {
         match group_result {
             Ok(group) => {
                 println!(
-                    "A:0x{:04X} B:0x{:04X} C:0x{:04X} D:0x{:04X}",
-                    group.a, group.b, group.c, group.d
+                    "A:0x{:04X} B:0x{:04X} C:0x{:04X} D:0x{:04X} date:{} time:{}",
+                    group.a, group.b, group.c, group.d, group.date, group.time
                 );
             }
             Err(e) => eprintln!("Error: {}", e),
