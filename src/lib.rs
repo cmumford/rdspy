@@ -3,10 +3,10 @@ use std::io::{self, BufRead};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RdsGroup {
-    pub a: u16,
-    pub b: u16,
-    pub c: u16,
-    pub d: u16,
+    pub a: Option<u16>,
+    pub b: Option<u16>,
+    pub c: Option<u16>,
+    pub d: Option<u16>,
     pub date: NaiveDate,
     pub time: NaiveTime,
 }
@@ -47,12 +47,11 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                     }
 
                     let parse_hex = |s: &str| -> Option<u16> {
-                        u16::from_str_radix(s, 16)
-                            .map_err(|e| {
-                                eprintln!("Hex parse error on '{}': {}", s, e);
-                                e
-                            })
-                            .ok()
+                        let trimmed = s.trim();
+                        if trimmed == "----" {
+                            return None;
+                        }
+                        u16::from_str_radix(trimmed, 16).ok()
                     };
 
                     let date_clean = parts[4].trim_start_matches('@').trim();
@@ -65,7 +64,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                         parse_hex(parts[2]),
                         parse_hex(parts[3]),
                     ) {
-                        (Some(a), Some(b), Some(c), Some(d)) => {
+                        (a, b, c, d) => {
                             return Some(Ok(RdsGroup {
                                 a,
                                 b,
@@ -74,10 +73,6 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                                 date: date.into(),
                                 time: time.into(),
                             }));
-                        }
-                        _ => {
-                            eprintln!("Skipping invalid hex line: {}", line);
-                            continue;
                         }
                     }
                 }

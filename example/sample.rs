@@ -47,10 +47,7 @@ fn process_reader<R: BufRead + 'static>(reader: R) -> io::Result<()> {
     for group_result in RdsGroupIterator::new(reader) {
         match group_result {
             Ok(group) => {
-                println!(
-                    "A:0x{:04X} B:0x{:04X} C:0x{:04X} D:0x{:04X} date:{} time:{}",
-                    group.a, group.b, group.c, group.d, group.date, group.time
-                );
+                println!("{:?}", group);
             }
             Err(e) => eprintln!("Error: {}", e),
         }
