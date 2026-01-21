@@ -23,7 +23,7 @@ fn main() -> io::Result<()> {
         match group_result {
             Ok(group) => {
                 println!(
-                    "A:{:04X} B:{:04X} C:{:04X} D:{:04X}",
+                    "A:0x{:04X} B:0x{:04X} C:0x{:04X} D:0x{:04X}",
                     group.a, group.b, group.c, group.d
                 );
             }
