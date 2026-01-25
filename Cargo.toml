@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 chrono = "0.4"
+log = "0.4"
 walkdir = "2.5"
 
 [[example]]

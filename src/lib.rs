@@ -1,4 +1,5 @@
 use chrono::{NaiveDate, NaiveTime};
+use log::warn;
 use std::io::{self, BufRead};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -41,8 +42,8 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                     }
 
                     let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() < 6 {
-                        eprintln!("Warning: skipping short line: {}", line);
+                    if parts.len() < 4 {
+                        warn!("Warning: skipping short line: {}", line);
                         continue;
                     }
 
@@ -54,9 +55,21 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                         u16::from_str_radix(trimmed, 16).ok()
                     };
 
-                    let date_clean = parts[4].trim_start_matches('@').trim();
-                    let date = NaiveDate::parse_from_str(date_clean, "%Y/%m/%d").unwrap();
-                    let time = NaiveTime::parse_from_str(parts[5], "%H:%M:%S%.f").unwrap();
+                    let mut date = NaiveDate::default();
+                    let mut time = NaiveTime::default();
+
+                    match parts.len() {
+                        5 => {
+                            // Some log files have a fifth parameter of the form `@0564`.
+                            // No idea what this is, so skipping for the time being.
+                        }
+                        6 => {
+                            let date_clean = parts[4].trim_start_matches('@').trim();
+                            date = NaiveDate::parse_from_str(date_clean, "%Y/%m/%d").unwrap();
+                            time = NaiveTime::parse_from_str(parts[5], "%H:%M:%S%.f").unwrap();
+                        }
+                        _ => {}
+                    }
 
                     match (
                         parse_hex(parts[0]),
