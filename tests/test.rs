@@ -177,4 +177,19 @@ AABB CCDD EEFF 0011 @2019/05/05 09:31:12.50
         assert_eq!(groups[1].a, None);
         assert_eq!(groups[2].a, Some(0xAABB));
     }
+
+    #[test]
+    fn test_bytes() {
+        let input = "C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85\n";
+        let mut iter = from_str(input);
+
+        let item = iter.next().unwrap().unwrap();
+
+        assert_eq!(item.a, Some(0xC6A8));
+        let bytes = item.a.unwrap().to_be_bytes();
+        assert_eq!(bytes[0], 0xC6);
+        assert_eq!(bytes[1], 0xA8);
+
+        assert!(iter.next().is_none());
+    }
 }
