@@ -49,7 +49,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
 
                     let parse_hex = |s: &str| -> Option<u16> {
                         let trimmed = s.trim();
-                        if trimmed == "----" {
+                        if trimmed == "----" || trimmed.len() != 4 {
                             return None;
                         }
                         u16::from_str_radix(trimmed, 16).ok()

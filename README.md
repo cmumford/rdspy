@@ -9,6 +9,12 @@ This project references rds-spy-logs as a Git submodule and uses them in tests.
 git clone --recurse-submodules https://github.com/cmumford/rdspy.git
 ```
 
+# Running tests
+
+```sh
+cargo test
+```
+
 # Example Program
 
 To process and dump a single file:
