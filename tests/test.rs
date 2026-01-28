@@ -23,11 +23,8 @@ mod tests {
         assert_eq!(item.c, Some(0xE0CD));
         assert_eq!(item.d, Some(0x6572));
 
-        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5).unwrap());
-        assert_eq!(
-            item.time,
-            NaiveTime::from_hms_milli_opt(9, 31, 10, 850).unwrap()
-        );
+        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5));
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(9, 31, 10, 850));
 
         assert!(iter.next().is_none());
     }
@@ -44,11 +41,8 @@ mod tests {
         assert_eq!(item.c, Some(0xE0CD));
         assert_eq!(item.d, None);
 
-        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5).unwrap());
-        assert_eq!(
-            item.time,
-            NaiveTime::from_hms_milli_opt(9, 31, 10, 960).unwrap()
-        );
+        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5));
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(9, 31, 10, 960));
     }
 
     #[test]
@@ -63,11 +57,8 @@ mod tests {
         assert_eq!(item.c, None);
         assert_eq!(item.d, None);
 
-        assert_eq!(item.date, NaiveDate::from_ymd_opt(2020, 12, 31).unwrap());
-        assert_eq!(
-            item.time,
-            NaiveTime::from_hms_milli_opt(23, 59, 59, 999).unwrap()
-        );
+        assert_eq!(item.date, NaiveDate::from_ymd_opt(2020, 12, 31));
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(23, 59, 59, 999));
     }
 
     #[test]
@@ -75,17 +66,45 @@ mod tests {
         let input = "ZZZZ 012A E0CD 6572 @2019/05/05 09:31:10.85\n";
         let mut iter = from_str(input);
 
-        let err = iter.next().unwrap().unwrap_err();
-        assert!(err.to_string().contains("invalid hex")); // adjust based on your error message
+        let item = iter.next().unwrap().unwrap();
+
+        assert_eq!(item.a, None);
+        assert_eq!(item.b, Some(0x012A));
+        assert_eq!(item.c, Some(0xE0CD));
+        assert_eq!(item.d, Some(0x6572));
+
+        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5));
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(9, 31, 10, 850));
     }
 
     #[test]
-    fn test_malformed_timestamp() {
-        let input = "C6A8 012A E0CD 6572 @2019-13-45 25:70:99.123\n";
+    fn test_malformed_date() {
+        let input = "C6A8 012A E0CD 6572 @2019-13-45 22:14:32.123\n";
         let mut iter = from_str(input);
 
-        let err = iter.next().unwrap().unwrap_err();
-        assert!(err.to_string().contains("date") || err.to_string().contains("time"));
+        let item = iter.next().unwrap().unwrap();
+        assert_eq!(item.a, Some(0xC6A8));
+        assert_eq!(item.b, Some(0x012A));
+        assert_eq!(item.c, Some(0xE0CD));
+        assert_eq!(item.d, Some(0x6572));
+
+        assert_eq!(item.date, None);
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(22, 14, 32, 123));
+    }
+
+    #[test]
+    fn test_malformed_time() {
+        let input = "C6A8 012A E0CD 6572 @2019/05/05 25:14:32.123\n";
+        let mut iter = from_str(input);
+
+        let item = iter.next().unwrap().unwrap();
+        assert_eq!(item.a, Some(0xC6A8));
+        assert_eq!(item.b, Some(0x012A));
+        assert_eq!(item.c, Some(0xE0CD));
+        assert_eq!(item.d, Some(0x6572));
+
+        assert_eq!(item.date, NaiveDate::from_ymd_opt(2019, 5, 5));
+        assert_eq!(item.time, None);
     }
 
     #[test]
@@ -100,10 +119,16 @@ C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85
         // First valid line
         let item1 = iter.next().unwrap().unwrap();
         assert_eq!(item1.a, Some(0xC6A8));
+        assert_eq!(item1.b, Some(0x012A));
+        assert_eq!(item1.c, Some(0xE0CD));
+        assert_eq!(item1.d, Some(0x6572));
 
         // Second valid line
         let item2 = iter.next().unwrap().unwrap();
         assert_eq!(item2.a, None);
+        assert_eq!(item2.b, None);
+        assert_eq!(item2.c, None);
+        assert_eq!(item2.d, None);
 
         assert!(iter.next().is_none());
     }
@@ -115,10 +140,7 @@ C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85
 
         let item = iter.next().unwrap().unwrap();
         assert_eq!(item.a, Some(0xC6A8));
-        assert_eq!(
-            item.time,
-            NaiveTime::from_hms_milli_opt(9, 31, 10, 850).unwrap()
-        );
+        assert_eq!(item.time, NaiveTime::from_hms_milli_opt(9, 31, 10, 850));
     }
 
     #[test]

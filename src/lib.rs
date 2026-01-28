@@ -8,8 +8,8 @@ pub struct RdsGroup {
     pub b: Option<u16>,
     pub c: Option<u16>,
     pub d: Option<u16>,
-    pub date: NaiveDate,
-    pub time: NaiveTime,
+    pub date: Option<NaiveDate>,
+    pub time: Option<NaiveTime>,
 }
 
 pub struct RdsGroupIterator<R: BufRead> {
@@ -33,11 +33,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                 Ok(_) => {
                     let line = line_buf.trim();
 
-                    if line.is_empty()
-                        || line.starts_with('%')
-                        || line.starts_with('<')
-                        || !line.starts_with(|c: char| c.is_ascii_hexdigit())
-                    {
+                    if line.is_empty() || line.starts_with('%') || line.starts_with('<') {
                         continue;
                     }
 
@@ -49,24 +45,25 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
 
                     let parse_hex = |s: &str| -> Option<u16> {
                         let trimmed = s.trim();
-                        if trimmed == "----" || trimmed.len() != 4 {
+                        if trimmed.len() != 4 || trimmed == "----" {
                             return None;
                         }
                         u16::from_str_radix(trimmed, 16).ok()
                     };
 
-                    let mut date = NaiveDate::default();
-                    let mut time = NaiveTime::default();
+                    let mut date = None;
+                    let mut time = None;
 
                     match parts.len() {
                         5 => {
                             // Some log files have a fifth parameter of the form `@0564`.
                             // No idea what this is, so skipping for the time being.
                         }
-                        6 => {
+                        6.. => {
                             let date_clean = parts[4].trim_start_matches('@').trim();
-                            date = NaiveDate::parse_from_str(date_clean, "%Y/%m/%d").unwrap();
-                            time = NaiveTime::parse_from_str(parts[5], "%H:%M:%S%.f").unwrap();
+                            date = NaiveDate::parse_from_str(date_clean, "%Y/%m/%d").ok();
+                            time = NaiveTime::parse_from_str(parts[5], "%H:%M:%S%.f").ok();
+                            // Ignore any extra fields.
                         }
                         _ => {}
                     }
@@ -83,8 +80,8 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                                 b,
                                 c,
                                 d,
-                                date: date.into(),
-                                time: time.into(),
+                                date: date,
+                                time: time,
                             }));
                         }
                     }
