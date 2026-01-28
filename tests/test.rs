@@ -30,6 +30,24 @@ mod tests {
     }
 
     #[test]
+    fn test_optional_date_time() {
+        let input = "C6A8 012A E0CD 6572\n";
+        let mut iter = from_str(input);
+
+        let item = iter.next().unwrap().unwrap();
+
+        assert_eq!(item.a, Some(0xC6A8));
+        assert_eq!(item.b, Some(0x012A));
+        assert_eq!(item.c, Some(0xE0CD));
+        assert_eq!(item.d, Some(0x6572));
+
+        assert_eq!(item.date, None);
+        assert_eq!(item.time, None);
+
+        assert!(iter.next().is_none());
+    }
+
+    #[test]
     fn test_some_missing_values() {
         let input = "C6A8 ---- E0CD ---- @2019/05/05 09:31:10.96\n";
         let mut iter = from_str(input);
