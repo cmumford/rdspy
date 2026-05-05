@@ -1,21 +1,28 @@
+#rdspy
+[![CI](https://github.com/cmumford/rdspy/actions/workflows/ci.yml/badge.svg)](https://github.com/cmumford/rdspy/actions/workflows/ci.yml)
+[![Crates.io Version](https://img.shields.io/crates/v/rdspy)](https://crates.io/crates/rdspy)
+[![docs.rs](https://docs.rs/rdspy/badge.svg)](https://docs.rs/rdspy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
 A library for reading logs created by [RDS Spy](https://rdsspy.com/).
 
 There is a large collection of logs, from around the world, at https://github.com/walczakp/rds-spy-logs.
 This project references rds-spy-logs as a Git submodule and uses them in tests.
 
-# Getting Source
+## Getting Source
 
 ```sh
 git clone --recurse-submodules https://github.com/cmumford/rdspy.git
 ```
 
-# Running tests
+## Running tests
 
 ```sh
 cargo test
 ```
 
-# Example Program
+## Example Program
 
 To process and dump a single file:
 ```sh
