@@ -2,6 +2,11 @@
 name = "rdspy"
 version = "1.0.0"
 edition = "2024"
+authors = ["Chris Mumford <cmumford@cmumford.com>"]
+description = "A library for reading logs created by RDS Spy."
+readme = "README.md"
+keywords = ["RDS", "spy", "radio"]
+license = "MIT"
 
 [dependencies]
 chrono = "0.4.44"
