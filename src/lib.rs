@@ -80,8 +80,8 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                                 b,
                                 c,
                                 d,
-                                date: date,
-                                time: time,
+                                date,
+                                time,
                             }));
                         }
                     }
