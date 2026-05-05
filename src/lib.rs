@@ -68,23 +68,14 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                         _ => {}
                     }
 
-                    match (
-                        parse_hex(parts[0]),
-                        parse_hex(parts[1]),
-                        parse_hex(parts[2]),
-                        parse_hex(parts[3]),
-                    ) {
-                        (a, b, c, d) => {
-                            return Some(Ok(RdsGroup {
-                                a,
-                                b,
-                                c,
-                                d,
-                                date,
-                                time,
-                            }));
-                        }
-                    }
+                    return Some(Ok(RdsGroup {
+                        a: parse_hex(parts[0]),
+                        b: parse_hex(parts[1]),
+                        c: parse_hex(parts[2]),
+                        d: parse_hex(parts[3]),
+                        date,
+                        time,
+                    }));
                 }
                 Err(e) => return Some(Err(e)),
             }

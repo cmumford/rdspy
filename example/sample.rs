@@ -63,21 +63,20 @@ fn process_directory(dir: &Path) -> io::Result<()> {
     {
         let path = entry.path();
 
-        if path.is_file() {
-            if let Some(ext) = path.extension() {
-                if ext == "rds" || ext == "spy" {
-                    println!("Processing file: {}", path.display());
-                    let file = match File::open(path) {
-                        Ok(f) => f,
-                        Err(e) => {
-                            eprintln!("Failed to open {}: {}", path.display(), e);
-                            continue;
-                        }
-                    };
-                    if let Err(e) = process_reader(BufReader::new(file)) {
-                        eprintln!("Error processing {}: {}", path.display(), e);
-                    }
+        if path.is_file()
+            && let Some(ext) = path.extension()
+            && (ext == "rds" || ext == "spy")
+        {
+            println!("Processing file: {}", path.display());
+            let file = match File::open(path) {
+                Ok(f) => f,
+                Err(e) => {
+                    eprintln!("Failed to open {}: {}", path.display(), e);
+                    continue;
                 }
+            };
+            if let Err(e) = process_reader(BufReader::new(file)) {
+                eprintln!("Error processing {}: {}", path.display(), e);
             }
         }
     }
