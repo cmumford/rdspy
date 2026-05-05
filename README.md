@@ -1,4 +1,4 @@
-#rdspy
+# rdspy
 [![CI](https://github.com/cmumford/rdspy/actions/workflows/ci.yml/badge.svg)](https://github.com/cmumford/rdspy/actions/workflows/ci.yml)
 [![Crates.io Version](https://img.shields.io/crates/v/rdspy)](https://crates.io/crates/rdspy)
 [![docs.rs](https://docs.rs/rdspy/badge.svg)](https://docs.rs/rdspy)
