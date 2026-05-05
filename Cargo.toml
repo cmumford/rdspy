@@ -1,12 +1,12 @@
 [package]
 name = "rdspy"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 
 [dependencies]
-chrono = "0.4"
-log = "0.4"
-walkdir = "2.5"
+chrono = "0.4.44"
+log = "0.4.29"
+walkdir = "2.5.0"
 
 [[example]]
 name = "sample"
