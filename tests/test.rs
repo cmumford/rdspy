@@ -127,11 +127,11 @@ mod tests {
 
     #[test]
     fn test_empty_line_skipped() {
-        let input = r#"
+        let input = r"
 C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85
 
 ---- ---- ---- ---- @2019/05/05 09:31:11.00
-"#;
+";
         let mut iter = from_str(input);
 
         // First valid line
@@ -163,11 +163,11 @@ C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85
 
     #[test]
     fn test_multiple_lines() {
-        let input = r#"
+        let input = r"
 C6A8 012A E0CD 6572 @2019/05/05 09:31:10.85
 ---- ---- ---- ---- @2019/05/05 09:31:11.00
 AABB CCDD EEFF 0011 @2019/05/05 09:31:12.50
-"#;
+";
 
         let iter = from_str(input);
         let groups: Vec<_> = iter.collect::<Result<Vec<_>, _>>().unwrap();

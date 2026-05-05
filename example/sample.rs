@@ -13,18 +13,18 @@ fn main() -> io::Result<()> {
         1 => {
             // No argument → stdin
             println!("Reading RDS groups from stdin...");
-            process_reader(BufReader::new(io::stdin()))?;
+            process_reader(BufReader::new(io::stdin()));
         }
         2 => {
             let path = Path::new(&args[1]);
 
             if path.is_dir() {
                 println!("Scanning directory: {}", path.display());
-                process_directory(path)?;
+                process_directory(path);
             } else if path.is_file() {
                 println!("Reading RDS groups from file: {}", path.display());
                 let file = File::open(path)?;
-                process_reader(BufReader::new(file))?;
+                process_reader(BufReader::new(file));
             } else {
                 eprintln!("Error: '{}' is not a file or directory", path.display());
                 std::process::exit(1);
@@ -43,23 +43,22 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-fn process_reader<R: BufRead + 'static>(reader: R) -> io::Result<()> {
+fn process_reader<R: BufRead + 'static>(reader: R) {
     for group_result in RdsGroupIterator::new(reader) {
         match group_result {
             Ok(group) => {
-                println!("{:?}", group);
+                println!("{group:?}");
             }
-            Err(e) => eprintln!("Error: {}", e),
+            Err(e) => eprintln!("Error: {e}"),
         }
     }
-    Ok(())
 }
 
-fn process_directory(dir: &Path) -> io::Result<()> {
+fn process_directory(dir: &Path) {
     for entry in walkdir::WalkDir::new(dir)
         .follow_links(false)
         .into_iter()
-        .filter_map(|e| e.ok())
+        .filter_map(std::result::Result::ok)
     {
         let path = entry.path();
 
@@ -75,11 +74,7 @@ fn process_directory(dir: &Path) -> io::Result<()> {
                     continue;
                 }
             };
-            if let Err(e) = process_reader(BufReader::new(file)) {
-                eprintln!("Error processing {}: {}", path.display(), e);
-            }
+            process_reader(BufReader::new(file));
         }
     }
-
-    Ok(())
 }

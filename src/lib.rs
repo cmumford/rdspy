@@ -39,7 +39,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
 
                     let parts: Vec<&str> = line.split_whitespace().collect();
                     if parts.len() < 4 {
-                        warn!("Warning: skipping short line: {}", line);
+                        warn!("Warning: skipping short line: {line}");
                         continue;
                     }
 
@@ -54,6 +54,7 @@ impl<R: BufRead> Iterator for RdsGroupIterator<R> {
                     let mut date = None;
                     let mut time = None;
 
+                    #[allow(clippy::match_same_arms)] // All comment in `5` case.
                     match parts.len() {
                         5 => {
                             // Some log files have a fifth parameter of the form `@0564`.
