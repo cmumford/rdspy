@@ -7,6 +7,8 @@ description = "A library for reading logs created by RDS Spy."
 readme = "README.md"
 keywords = ["RDS", "spy", "radio"]
 license = "MIT"
+homepage = "https://github.com/cmumford/rdspy"
+repository = "https://github.com/cmumford/rdspy"
 
 [dependencies]
 chrono = "0.4.44"
