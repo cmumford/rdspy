@@ -11,8 +11,8 @@ homepage = "https://github.com/cmumford/rdspy"
 repository = "https://github.com/cmumford/rdspy"
 
 [dependencies]
-chrono = "0.4.44"
-log = "0.4.29"
+chrono = "0.4.45"
+log = "0.4.33"
 walkdir = "2.5.0"
 
 [[example]]
