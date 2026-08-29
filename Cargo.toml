@@ -12,7 +12,7 @@ repository = "https://github.com/cmumford/rdspy"
 
 [dependencies]
 chrono = "0.4.45"
-log = "0.4.33"
+log = "0.4.34"
 walkdir = "2.5.0"
 
 [[example]]
